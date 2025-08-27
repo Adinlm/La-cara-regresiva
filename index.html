@@ -24,11 +24,11 @@
         #timerDisplay {
             font-size: 2.8em;
             font-family: 'Courier New', Courier, monospace;
-            min-width: 380px; /* This is fine for desktop */
+            min-width: 380px; 
         }
 
         .face-container {
-            /* Margin handled by Bootstrap my-4 */
+            
         }
 
         .face {
@@ -46,7 +46,6 @@
             box-shadow: 0 0 15px hsla(var(--face-hue, 0), 80%, 60%, 0.5);
         }
 
-        /* Ojos */
         .face::before,
         .face::after {
             content: '';
@@ -92,7 +91,6 @@
             bottom: 25px;
         }
 
-        /* --- Vibration Animation --- */
         @keyframes vibrate {
             0%, 100% { transform: translate(0, 0); }
             25% { transform: translate(-1px, 1px) rotate(-0.5deg); }
@@ -106,7 +104,6 @@
             animation-timing-function: linear;
         }
 
-        /* Star Style - Keep As Is */
         .star {
             position: absolute;
             width: 2px;
@@ -149,17 +146,16 @@
         /* Estos estilos se aplican solo si la pantalla mide 576px de ancho o menos */
         @media (max-width: 576px) {
             h1.display-4 {
-                font-size: 2.5rem; /* Hacemos el título un poco más pequeño */
+                font-size: 2.5rem; 
             }
 
             #timerDisplay {
-                font-size: 1.9em; /* Reducimos el tamaño de la fuente del contador */
-                min-width: 0;     /* ELIMINAMOS el ancho mínimo que causa el problema */
-                width: 90%;       /* Hacemos que ocupe el 90% del ancho disponible */
+                font-size: 1.9em; 
+                min-width: 0;     
+                width: 90%;       
                 padding: 0.5rem !important;
             }
 
-            /* Apilamos los controles de la hora uno sobre otro */
             .input-area.input-group {
                 flex-direction: column;
                 align-items: center;
@@ -169,22 +165,21 @@
             .input-area label,
             .input-area input,
             .input-area button {
-                width: 80%; /* Les damos un ancho consistente */
-                margin-bottom: 0.5rem; /* Añadimos espacio entre ellos */
+                width: 80%; 
+                margin-bottom: 0.5rem; 
                 text-align: center;
             }
             
             .input-area input[type="time"] {
-                max-width: none; /* Quitamos el max-width anterior */
+                max-width: none;
             }
 
             .face {
-                width: 80px; /* Hacemos la cara un poco más pequeña */
+                width: 80px; 
                 height: 80px;
                 border-width: 4px;
             }
 
-            /* Reajustamos ojos y boca para la nueva cara */
             .face::before, .face::after { top: 22px; }
             .face::before { left: 18px; }
             .face::after { right: 18px; }
@@ -227,7 +222,6 @@
         crossorigin="anonymous"></script>
 
     <script>
-        // TU CÓDIGO JAVASCRIPT VA AQUÍ (SIN CAMBIOS)
         const timerDisplay = document.getElementById('timerDisplay');
         const faceDisplay = document.getElementById('faceDisplay');
         const mouth = document.getElementById('mouth');
@@ -242,11 +236,10 @@
         let initialDurationMs = 0;
         let tenMinuteIntervalsMarked = 0;
 
-        // --- Constants for Vibration ---
-        const MIN_VIBRATION_DURATION = 0.05; // seconds (fastest vibration)
-        const MAX_VIBRATION_DURATION = 0.6;  // seconds (slowest vibration at start)
+        
+        const MIN_VIBRATION_DURATION = 0.05; 
+        const MAX_VIBRATION_DURATION = 0.6;  
 
-        // --- Helper Functions (formatTime, setFaceState, addStars - unchanged) ---
         function formatTime(milliseconds) {
             if (milliseconds < 0) milliseconds = 0;
             let totalSeconds = Math.floor(milliseconds / 1000);
@@ -292,19 +285,17 @@
                 starContainer.appendChild(star);
             }
         }
-        // --- Update Timer Loop ---
         function updateTimer() {
             const now = new Date().getTime();
             const remainingTime = targetTimestamp - now;
             const elapsedMs = initialDurationMs - remainingTime;
 
-            // --- Stop Condition ---
             if (remainingTime <= 0) {
                 clearInterval(timerInterval);
                 timerDisplay.textContent = "00:00:00:000";
                 faceDisplay.style.setProperty('--face-hue', 120);
                 mouth.className = 'mouth happy-mouth';
-                faceDisplay.classList.remove('vibrating'); // Stop vibration
+                faceDisplay.classList.remove('vibrating');
                 faceDisplay.style.animationDuration = '';
 
                 const finalHoursElapsed = Math.floor(Math.max(0, initialDurationMs) / (1000 * 60 * 60));
@@ -317,24 +308,20 @@
                 return;
             }
 
-            // --- Update Display ---
             timerDisplay.textContent = formatTime(remainingTime);
 
-            // --- Update Elapsed Hours Display ---
             const fullHoursElapsed = Math.floor(elapsedMs / (1000 * 60 * 60));
             hoursElapsedDisplay.textContent = `Horas transcurridas: ${fullHoursElapsed}`;
 
-            // --- Calculate Progress ---
             let progress = 0;
             if (initialDurationMs > 0) {
                 // Clamp progress between 0 and 1 to avoid issues
                 progress = Math.max(0, Math.min(1, elapsedMs / initialDurationMs));
             }
 
-            // --- Update Face Color/Mouth ---
-            setFaceState(progress); // Pass the calculated progress
+           
+            setFaceState(progress);
 
-            // --- Add Stars (1 star per 10 minutes elapsed) ---
             const totalMinutesElapsed = Math.floor(elapsedMs / (1000 * 60));
             const currentTenMinuteIntervals = Math.floor(totalMinutesElapsed / 10);
 
@@ -344,25 +331,21 @@
                 tenMinuteIntervalsMarked = currentTenMinuteIntervals;
             }
 
-            // --- Update Face Vibration (Proportional Intensity) ---
             if (initialDurationMs > 0) {
-                // Calculate duration based on progress (inverse relationship)
                 const durationRange = MAX_VIBRATION_DURATION - MIN_VIBRATION_DURATION;
                 let vibrationDuration = MAX_VIBRATION_DURATION - (progress * durationRange);
 
-                // Ensure duration stays within defined bounds
                 vibrationDuration = Math.max(MIN_VIBRATION_DURATION, vibrationDuration);
 
-                faceDisplay.classList.add('vibrating'); // Ensure class is added
+                faceDisplay.classList.add('vibrating'); 
                 faceDisplay.style.animationDuration = `${vibrationDuration}s`;
             } else {
-                // If timer isn't running (duration 0), remove vibration
+               
                 faceDisplay.classList.remove('vibrating');
                 faceDisplay.style.animationDuration = '';
             }
         }
 
-        // --- Start Button Logic ---
         startButton.addEventListener('click', () => {
             const timeValue = targetTimeInput.value;
             if (!timeValue) {
@@ -386,20 +369,18 @@
             }
 
             targetTimestamp = tempTargetTimestamp;
-            initialDurationMs = Math.max(0, targetTimestamp - currentTimestamp); // Ensure non-negative
+            initialDurationMs = Math.max(0, targetTimestamp - currentTimestamp); 
 
             targetInfo.textContent = `Objetivo: ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')} de ${targetDayString}.`;
 
-            // --- Reset Visual State ---
             tenMinuteIntervalsMarked = 0;
             starContainer.innerHTML = '';
             faceDisplay.style.setProperty('--face-hue', 0);
             mouth.className = 'mouth sad-mouth';
             hoursElapsedDisplay.textContent = 'Horas transcurridas: 0';
-            faceDisplay.classList.remove('vibrating'); // Reset vibration
+            faceDisplay.classList.remove('vibrating'); 
             faceDisplay.style.animationDuration = '';
 
-            // --- Initial Display & Start ---
             const initialElapsed = Math.max(0, now.getTime() - currentTimestamp);
             const initialProgress = initialDurationMs > 0 ? Math.max(0, Math.min(1, initialElapsed / initialDurationMs)) : 0;
 
@@ -423,7 +404,6 @@
             }
         });
 
-        // --- Initial Page Load State ---
         timerDisplay.textContent = formatTime(0);
         mouth.className = 'mouth sad-mouth';
         faceDisplay.style.setProperty('--face-hue', 0);
@@ -433,4 +413,5 @@
         faceDisplay.style.animationDuration = '';
     </script>
 </body>
+
 </html>
